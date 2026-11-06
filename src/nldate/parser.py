@@ -121,6 +121,8 @@ def parse(s: str, today: date | None = None) -> date:
 def _normalize(s: str) -> str:
     text = s.strip().lower()
     text = text.replace(",", " ")
+    # Drop abbreviation periods (e.g. "Dec." -> "Dec").
+    text = text.replace(".", " ")
     text = re.sub(r"\s+", " ", text)
     # Drop leading "on " / "the " noise that often wraps dates.
     text = re.sub(r"^(on|the)\s+", "", text)
