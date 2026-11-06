@@ -130,6 +130,19 @@ def _normalize(s: str) -> str:
 
 
 def _parse_normalized(text: str, today: date) -> date:
+    # Simple relative keywords (before before/after, so "day after tomorrow"
+    # is not treated as a duration offset).
+    if text == "today":
+        return today
+    if text == "tomorrow":
+        return today + timedelta(days=1)
+    if text == "yesterday":
+        return today - timedelta(days=1)
+    if text in {"day after tomorrow", "the day after tomorrow"}:
+        return today + timedelta(days=2)
+    if text in {"day before yesterday", "the day before yesterday"}:
+        return today - timedelta(days=2)
+
     # "<duration> before|after <anchor>"
     m = re.fullmatch(
         r"(.+?)\s+(before|after)\s+(.+)",
@@ -163,18 +176,6 @@ def _parse_normalized(text: str, today: date) -> date:
     if m:
         delta = _parse_duration(m.group(1))
         return _apply_duration(today, delta, sign=-1)
-
-    # Simple relative keywords
-    if text == "today":
-        return today
-    if text == "tomorrow":
-        return today + timedelta(days=1)
-    if text == "yesterday":
-        return today - timedelta(days=1)
-    if text in {"day after tomorrow", "the day after tomorrow"}:
-        return today + timedelta(days=2)
-    if text in {"day before yesterday", "the day before yesterday"}:
-        return today - timedelta(days=2)
 
     # next/last/this week|month|year
     m = re.fullmatch(r"(next|last|this)\s+(week|month|year)", text)
