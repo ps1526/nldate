@@ -25,6 +25,7 @@ def test_absolute_named_date() -> None:
 
 def test_iso_and_numeric() -> None:
     assert parse("2025-12-01", today=TODAY) == date(2025, 12, 1)
+    assert parse("2025/12/04", today=TODAY) == date(2025, 12, 4)
     assert parse("12/1/2025", today=TODAY) == date(2025, 12, 1)
 
 

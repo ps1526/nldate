@@ -315,13 +315,13 @@ def _strip_ordinal(day_text: str) -> int:
 
 
 def _try_parse_absolute(text: str, today: date) -> date | None:
-    # ISO: YYYY-MM-DD
-    m = re.fullmatch(r"(\d{4})-(\d{1,2})-(\d{1,2})", text)
+    # Year-first: YYYY-MM-DD, YYYY/MM/DD, YYYY.MM.DD
+    m = re.fullmatch(r"(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})", text)
     if m:
         return date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
     # Numeric: M/D/YYYY or M-D-YYYY (also D/M/YYYY when day > 12 is unambiguous)
-    m = re.fullmatch(r"(\d{1,2})[/-](\d{1,2})[/-](\d{4})", text)
+    m = re.fullmatch(r"(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})", text)
     if m:
         a, b, year = int(m.group(1)), int(m.group(2)), int(m.group(3))
         # Prefer US M/D/YYYY when both are plausible.
